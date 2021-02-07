@@ -6,7 +6,7 @@ remote_state {
   }  
   config = {
     bucket = "tf-states"
-    endpoint = "http://devops-tools-argocd-minio.minio.svc"
+    endpoint = get_env("AWS_S3_ENDPOINT")
     region = "main"
     key    = "basement/${path_relative_to_include()}/terraform.tfstate"
     skip_credentials_validation = true
