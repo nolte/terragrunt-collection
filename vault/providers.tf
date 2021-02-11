@@ -1,0 +1,4 @@
+provider "vault" {
+}
+provider "kubernetes" {
+}

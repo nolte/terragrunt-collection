@@ -54,6 +54,16 @@ resource "minio_iam_user_policy_attachment" "workflow_user" {
   policy_name = "${minio_iam_policy.workflow_storage.id}"
 }
 
+variable "secrets_engine_path" {
+  default = "secrets"
+}
+
+resource "vault_generic_secret" "example" {
+  path = format("%s/argo/sa/s3",var.secrets_engine_path)
+
+  data_json = jsonencode(minio_iam_user.workflow_user)
+}
+
 
 #resource "minio_iam_group_policy" "workflow_storage" {
 #  name = "workflow-storage"
