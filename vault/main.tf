@@ -27,7 +27,26 @@ resource "vault_auth_backend" "kubernetes" {
 resource "vault_kubernetes_auth_backend_config" "example" {
   backend                = vault_auth_backend.kubernetes.path
   kubernetes_host        = "https://kubernetes.svc:443"
-  kubernetes_ca_cert     = data.kubernetes_secret.this.data["ca.crt"]
+  kubernetes_ca_cert     = <<EOF
+-----BEGIN CERTIFICATE-----
+MIIC5zCCAc+gAwIBAgIBADANBgkqhkiG9w0BAQsFADAVMRMwEQYDVQQDEwprdWJl
+cm5ldGVzMB4XDTIxMDIxNDEyNDU1NVoXDTMxMDIxMjEyNDU1NVowFTETMBEGA1UE
+AxMKa3ViZXJuZXRlczCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMwH
+tYwmGheYxL3tCzNXn0SvuXZYUm5r7xl9as3m2FNX6FIJImKU3L36TpDO6W+P8OF2
+6nWPj1yBCqJZq/ltbEfsWagABP0zqrykHRDAkyftzR0Pb7hcVbH6Hon3l+8MRmLa
+Pvu3xGD+cH9M/8gcLIUe4zHGrMYW97LADGn7Bs8cKfJgkxVJxvPgYBJ2aDSeNLO0
+Dk34R3sW2kYMK4cJtgOHIFT3qiLr7+Y81GcYnoU582Yimy/bO8YlHCzVrdxBD3rF
+8aUiYuXfo/NBg4Q6gHDw7l60pEwDzOCL59o9JjSVjsWEmYlD+2Ap+LKZ3NLZGc+9
+AlKqwVPLHM06+8BWL70CAwEAAaNCMEAwDgYDVR0PAQH/BAQDAgKkMA8GA1UdEwEB
+/wQFMAMBAf8wHQYDVR0OBBYEFBoTclYbd3Ppy3aekulCIoGnN21KMA0GCSqGSIb3
+DQEBCwUAA4IBAQB/EYqyHPDWhpulIDGVqKB1uLeCq95uvMyXk939qDVwziXheXgv
+Ahbfes2gX18Ma5E+KdB+kDgWCpMOzQKfDYSPXupxOpYKt1M9AJumgYeJzTwtSGB5
+x0AjcMd5Cbt57bXlOg5Hhr+3FKkzf5uVtWupSk8OJIxtxL4HANT08VjToTVYgxXg
+j/Rey4Tozsnr/LYN5+NTHjT9OFXPNCfJbBrkeZhDGB+v/kqkeqZnlgPJQOwtqRMd
+XiYyrC5JALKb0D11/We4bZ2/iV1I2TXlBEog/STH84MFIt19z2so30BGdcED5S8x
+42FaJScbme6oMwwykt9UN3/4Lnpy2JVOY54L
+-----END CERTIFICATE-----
+EOF
   token_reviewer_jwt     = data.kubernetes_secret.this.data.token
   issuer                 = "api"
   disable_iss_validation = "true"
