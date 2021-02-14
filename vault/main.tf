@@ -52,6 +52,17 @@ resource "kubernetes_service_account" "vault_auth" {
   }
 }
 
+resource "vault_policy" "example" {
+  name = "dev-team"
+
+  policy = <<EOT
+path "secrets/*" {
+  capabilities = ["create", "read", "update", "delete", "list"]
+
+}
+EOT
+}
+
 
 resource "vault_kubernetes_auth_backend_role" "example" {
   backend                          = vault_auth_backend.kubernetes.path
@@ -59,7 +70,7 @@ resource "vault_kubernetes_auth_backend_role" "example" {
   bound_service_account_names      = [kubernetes_service_account.vault_auth.metadata.0.name]
   bound_service_account_namespaces = [kubernetes_service_account.vault_auth.metadata.0.namespace]
   token_ttl                        = 3600
-  token_policies                   = ["default"]
+  token_policies                   = ["default","dev-team"]
   #audience                         = "vault"
 }
 
@@ -93,7 +104,7 @@ module "secrets_engine" {
 
 
 resource "vault_generic_secret" "example" {
-  path = format("%s/foo",module.secrets_engine.path)
+  path = format("%s/test/foo",module.secrets_engine.path)
 
   data_json = <<EOT
 {
