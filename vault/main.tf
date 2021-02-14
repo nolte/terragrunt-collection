@@ -6,31 +6,19 @@ data "kubernetes_namespace" "this" {
   }
 }
 
-resource "kubernetes_service_account" "this" {
+data "kubernetes_service_account" "this" {
   metadata {
-    name = "vault-login-sa"
+    name = "vault"
     namespace = data.kubernetes_namespace.this.metadata.0.name
-  }
-  secret {
-    name = kubernetes_secret.this.metadata.0.name
   }
 }
 
 data "kubernetes_secret" "this" {
-  depends_on = [ kubernetes_service_account.this ]
   metadata {
-    name = kubernetes_service_account.this.default_secret_name
+    name = data.kubernetes_service_account.this.default_secret_name
     namespace = data.kubernetes_namespace.this.metadata.0.name
   }
 }
-
-resource "kubernetes_secret" "this" {
-  metadata {
-    name = "vault-login-sa"
-    namespace = data.kubernetes_namespace.this.metadata.0.name
-  }
-}
-
 
 resource "vault_auth_backend" "kubernetes" {
   type = "kubernetes"
@@ -58,7 +46,6 @@ resource "vault_policy" "example" {
   policy = <<EOT
 path "secrets/*" {
   capabilities = ["create", "read", "update", "delete", "list"]
-
 }
 EOT
 }
